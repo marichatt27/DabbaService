@@ -15,10 +15,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://dabba-service.vercel.app",
-    ],
+    origin: true,
     credentials: true,
   })
 );

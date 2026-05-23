@@ -1,0 +1,274 @@
+
+### ROOT TEST
+GET http://localhost:5000/
+
+
+
+### =====================================
+### AUTH APIs
+### =====================================
+
+### REGISTER CUSTOMER
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Sruthi",
+  "email": "sruthi@gmail.com",
+  "password": "123456",
+  "role": "customer",
+  "address": "Hyderabad",
+  "phone": "9876543210"
+}
+
+
+
+### REGISTER PROVIDER
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Provider One",
+  "email": "provider@gmail.com",
+  "password": "123456",
+  "role": "provider",
+  "address": "Hyderabad",
+  "phone": "9999999999"
+}
+
+
+
+### REGISTER ADMIN
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin",
+  "email": "admin@gmail.com",
+  "password": "123456",
+  "role": "admin",
+  "address": "Hyderabad",
+  "phone": "8888888888"
+}
+
+
+
+### LOGIN CUSTOMER
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "sruthi@gmail.com",
+  "password": "123456"
+}
+
+
+
+### LOGIN PROVIDER
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "provider@gmail.com",
+  "password": "123456"
+}
+
+
+
+### LOGIN ADMIN
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "123456"
+}
+
+### PROTECTED ROUTE
+GET http://localhost:5000/api/test/protected
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMDJmMjhlYzIwZDk0MDUwMzQ2Zjg5YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc3ODU3ODEzOSwiZXhwIjoxNzc5MTgyOTM5fQ.liXtUXxab0uEt2pPtFMTU8SGQkkQPv5AaBmNmKjuSR0
+
+### =====================================
+### MEAL APIs
+### =====================================
+
+### GET ALL MEALS
+GET http://localhost:5000/api/meals
+
+
+
+### ADD MEAL
+POST http://localhost:5000/api/meals
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMDJmOTM1ZWE4NGMwZjgzN2E2NGU3YiIsInJvbGUiOiJwcm92aWRlciIsImlhdCI6MTc3ODU3OTc3MiwiZXhwIjoxNzc5MTg0NTcyfQ.aBFY5q_QE0q8K66t-kVAE-J7TpVvFsVsm3CC7xXR0h4
+
+{
+  "title": "Veg Lunch Box",
+  "description": "Rice, Curry, Dal, Roti",
+  "price": 120,
+  "category": "Lunch",
+  "provider": "Provider One",
+  "image": "https://example.com/image.jpg"
+}
+
+
+
+### ADD BREAKFAST MEAL
+POST http://localhost:5000/api/meals
+Content-Type: application/json
+
+{
+  "title": "Idli Breakfast",
+  "description": "4 Idlis with Chutney",
+  "price": 60,
+  "category": "Breakfast",
+  "provider": "Provider One",
+  "image": "https://example.com/idli.jpg"
+}
+
+
+
+### UPDATE MEAL
+PUT http://localhost:5000/api/meals/MEAL_ID
+Content-Type: application/json
+
+{
+  "title": "Updated Veg Lunch",
+  "description": "Rice, Curry, Dal, Sweet",
+  "price": 150
+}
+
+
+
+### DELETE MEAL
+DELETE http://localhost:5000/api/meals/MEAL_ID
+
+
+
+### =====================================
+### SUBSCRIPTION APIs
+### =====================================
+
+### CREATE SUBSCRIPTION
+POST http://localhost:5000/api/subscriptions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMDJmMjhlYzIwZDk0MDUwMzQ2Zjg5YSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc3ODU4MDI2NywiZXhwIjoxNzc5MTg1MDY3fQ.bjLmSvAcm6OZTBYqk9qBHqt9IHYvd75AzP1XfsqBZNE
+
+{
+  "meal": "6a02f99eea84c0f837a64e7c",
+  "startDate": "2026-05-12",
+  "duration": "Monthly",
+  "status": "Active"
+}
+
+
+
+### GET ALL SUBSCRIPTIONS
+GET http://localhost:5000/api/subscriptions
+
+
+
+### UPDATE SUBSCRIPTION STATUS
+PUT http://localhost:5000/api/subscriptions/SUBSCRIPTION_ID
+Content-Type: application/json
+
+{
+  "status": "Paused"
+}
+
+
+
+### CANCEL SUBSCRIPTION
+DELETE http://localhost:5000/api/subscriptions/SUBSCRIPTION_ID
+
+
+
+### =====================================
+### USER APIs
+### =====================================
+
+### GET ALL USERS
+GET http://localhost:5000/api/users
+
+
+
+### GET SINGLE USER
+GET http://localhost:5000/api/users/USER_ID
+
+
+
+### UPDATE USER
+PUT http://localhost:5000/api/users/USER_ID
+Content-Type: application/json
+
+{
+  "name": "Updated User",
+  "address": "New Address"
+}
+
+
+
+### DELETE USER
+DELETE http://localhost:5000/api/users/USER_ID
+
+
+
+### =====================================
+### ADMIN APIs
+### =====================================
+
+### GET ALL ORDERS
+GET http://localhost:5000/api/admin/orders
+
+
+
+### GET DASHBOARD STATS
+GET http://localhost:5000/api/admin/stats
+
+
+
+### GET ALL PROVIDERS
+GET http://localhost:5000/api/admin/providers
+
+
+
+### BLOCK USER
+PUT http://localhost:5000/api/admin/block-user/USER_ID
+
+
+
+### =====================================
+### REVIEW APIs
+### =====================================
+
+### ADD REVIEW
+POST http://localhost:5000/api/reviews
+Content-Type: application/json
+
+{
+  "mealId": "MEAL_ID",
+  "userId": "USER_ID",
+  "rating": 5,
+  "comment": "Excellent homemade food"
+}
+
+
+
+### GET MEAL REVIEWS
+GET http://localhost:5000/api/reviews/MEAL_ID
+
+
+
+### =====================================
+### PASSWORD APIs
+### =====================================
+
+### CHANGE PASSWORD
+PUT http://localhost:5000/api/auth/change-password
+Content-Type: application/json
+
+{
+  "email": "sruthi@gmail.com",
+  "currentPassword": "123456",
+  "newPassword": "newpassword123"
+}

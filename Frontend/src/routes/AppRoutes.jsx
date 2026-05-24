@@ -9,6 +9,8 @@ import MySubscriptions from "../pages/MySubscriptions";
 import ProviderDashboard from "../pages/ProviderDashboard";
 import AddMeal from "../pages/AddMeal";
 import EditMeal from "../pages/EditMeal";
+import ProtectedRoute from "../components/ProtectedRoute";
+import AdminDashboard from "../pages/AdminDashboard";
 
 const router = createBrowserRouter([
   {
@@ -21,9 +23,30 @@ const router = createBrowserRouter([
       { path: "meals", element: <Meals /> },
       { path: "profile", element: <UserProfile /> },
       { path: "subscriptions", element: <MySubscriptions /> },
-      { path: "provider-dashboard", element: <ProviderDashboard /> },
-      { path: "add-meal", element: <AddMeal /> },
-      { path: "edit-meal/:id", element: <EditMeal /> },
+      {
+        path: "provider-dashboard",
+        element: (
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <ProviderDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "add-meal",
+        element: (
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <AddMeal />
+          </ProtectedRoute>
+      ),
+      },
+      {
+        path: "edit-meal/:id",
+        element: (
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <EditMeal />
+          </ProtectedRoute>
+      ),
+    },
     ],
   },
 ]);

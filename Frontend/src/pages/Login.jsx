@@ -26,7 +26,7 @@ function Login() {
       try {
         const profileRes = await import("../services/api").then(m => m.default.get("/auth/me"));
         const role = profileRes.data.role;
-        if (role === "provider") {
+        if (role === "ADMIN") {
           navigate("/provider-dashboard");
         } else {
           navigate("/meals");

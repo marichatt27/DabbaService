@@ -26,7 +26,7 @@ const router = createBrowserRouter([
       {
         path: "provider-dashboard",
         element: (
-          <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <ProtectedRoute allowedRoles={["provider", "admin"]}>
           <ProviderDashboard />
           </ProtectedRoute>
         ),
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
       {
         path: "add-meal",
         element: (
-          <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <ProtectedRoute allowedRoles={["provider", "admin"]}>
           <AddMeal />
           </ProtectedRoute>
       ),
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
       {
         path: "edit-meal/:id",
         element: (
-          <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <ProtectedRoute allowedRoles={["provider", "admin"]}>
           <EditMeal />
           </ProtectedRoute>
       ),

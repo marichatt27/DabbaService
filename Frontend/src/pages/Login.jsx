@@ -28,11 +28,6 @@ function Login() {
 
     if (result.success) {
 
-      // Store JWT token
-      localStorage.setItem(
-        "token",
-        result.token
-      );
 
       try {
 
@@ -41,7 +36,7 @@ function Login() {
 
         const role = profileRes.data.role;
 
-        if (role === "ADMIN") {
+        if (role === "provider" || role === "admin") {
           navigate("/provider-dashboard");
         } else {
           navigate("/meals");

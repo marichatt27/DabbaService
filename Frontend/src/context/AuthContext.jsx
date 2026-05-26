@@ -48,11 +48,12 @@ export const AuthProvider = ({ children }) => {
     });
 
     setUser(res.data.user);
+setToken(res.data.token);
 
-    return {
-      success: true,
-      token: res.data.token,
-    };
+return {
+  success: true,
+  token: res.data.token,
+};
 
   } catch (error) {
 

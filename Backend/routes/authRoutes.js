@@ -136,7 +136,7 @@ router.delete("/admin/users/:id", authMiddleware, async (req, res) => {
 });
 
 // FIX OLD USERS WITHOUT isActive
-router.put("/admin/fix-users", async (req, res) => {
+router.get("/admin/fix-users", async (req, res) => {
 
   try {
 

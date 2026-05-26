@@ -1,9 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const adminRoutes = require("./routes/adminRoutes");
-
-app.use("/api/admin", adminRoutes);
 
 require("dotenv").config();
 

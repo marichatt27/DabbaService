@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
 require("dotenv").config();
 
 const connectDB = require("./config/db");
@@ -8,13 +10,12 @@ const authRoutes = require("./routes/authRoutes");
 const testRoutes = require("./routes/testRoutes");
 const mealRoutes = require("./routes/mealRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
-const cookieParser = require("cookie-parser");
-
-app.use(cookieParser());
 
 const app = express();
 
 connectDB();
+
+app.use(cookieParser());
 
 app.use(
   cors({
@@ -22,6 +23,7 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);

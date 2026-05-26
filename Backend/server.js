@@ -15,7 +15,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: "https://dabba-service-git-main-marichatt27s-projects.vercel.app",
+    origin: "https://dabba-service-aidkh5o6c-marichatt27s-projects.vercel.app",
     credentials: true,
   })
 );

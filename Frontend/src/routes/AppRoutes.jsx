@@ -32,6 +32,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+  path: "admin-dashboard",
+  element: (
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <AdminDashboard />
+    </ProtectedRoute>
+  ),
+},
+      {
         path: "add-meal",
         element: (
           <ProtectedRoute allowedRoles={["provider", "admin"]}>

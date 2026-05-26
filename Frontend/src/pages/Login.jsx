@@ -36,11 +36,13 @@ function Login() {
 
         const role = profileRes.data.role;
 
-        if (role === "provider" || role === "admin") {
-          navigate("/provider-dashboard");
-        } else {
-          navigate("/meals");
-        }
+if (role === "admin") {
+  navigate("/admin-dashboard");
+} else if (role === "provider") {
+  navigate("/provider-dashboard");
+} else {
+  navigate("/meals");
+}
 
       } catch (err) {
         console.log(err);

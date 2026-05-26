@@ -5,61 +5,46 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      localStorage.setItem("token", token);
-    } else {
-      delete api.defaults.headers.common["Authorization"];
-      localStorage.removeItem("token");
-    }
-  }, [token]);
+  let isMounted = true;
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (!token) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-      try {
-        const response = await api.get("/auth/me");
-        setUser(response.data);
-      } catch (error) {
-        console.error("Fetch user error:", error);
-        setToken(null);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, [token]);
+  const fetchUser = async () => {
+    try {
+      const response = await api.get("/auth/me");
+      if (isMounted) setUser(response.data);
+    } catch (error) {
+      if (isMounted) setUser(null);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  };
+
+  fetchUser();
+
+  return () => {
+    isMounted = false;
+  };
+}, []);
 
   const login = async (email, password) => {
   try {
+    await api.post("/auth/login", { email, password });
 
-    const res = await api.post("/auth/login", {
-      email,
-      password,
-    });
+    // small delay before calling /me
+    await new Promise((r) => setTimeout(r, 100));
 
-    setUser(res.data.user);
-setToken(res.data.token);
+    const res = await api.get("/auth/me");
 
-return {
-  success: true,
-  token: res.data.token,
-};
+    setUser(res.data);
+
+    return { success: true };
 
   } catch (error) {
-
     return {
       success: false,
-      error: error.response.data.message,
+      error: error.response?.data?.message || "Login failed",
     };
   }
 };
@@ -76,10 +61,8 @@ return {
   };
 
   const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem("token");
-  };
+  setUser(null);
+};
 
   const updateProfile = async (profileData) => {
     try {
@@ -94,7 +77,7 @@ return {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

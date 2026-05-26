@@ -40,18 +40,28 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = async (email, password) => {
-    try {
-      const response = await api.post("/auth/login", { email, password });
-      const { token: receivedToken, user: receivedUser } = response.data;
-      setToken(receivedToken);
-      setUser(receivedUser);
-      return { success: true };
-    } catch (error) {
-      console.error("Login error:", error);
-      const errMsg = error.response?.data?.message || "Invalid credentials. Please try again.";
-      return { success: false, error: errMsg };
-    }
-  };
+  try {
+
+    const res = await api.post("/auth/login", {
+      email,
+      password,
+    });
+
+    setUser(res.data.user);
+
+    return {
+      success: true,
+      token: res.data.token,
+    };
+
+  } catch (error) {
+
+    return {
+      success: false,
+      error: error.response.data.message,
+    };
+  }
+};
 
   const register = async (name, email, password, role) => {
     try {

@@ -7,33 +7,51 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!email || !password) {
       setError("Please fill in all fields.");
       return;
     }
+
     setError("");
     setSubmitting(true);
 
     const result = await login(email, password);
+
     setSubmitting(false);
 
     if (result.success) {
+
+      // Store JWT token
+      localStorage.setItem(
+        "token",
+        result.token
+      );
+
       try {
-        const profileRes = await import("../services/api").then(m => m.default.get("/auth/me"));
+
+        const profileRes = await import("../services/api")
+          .then((m) => m.default.get("/auth/me"));
+
         const role = profileRes.data.role;
-        if (role === "provider") {
+
+        if (role === "ADMIN") {
           navigate("/provider-dashboard");
         } else {
           navigate("/meals");
         }
+
       } catch (err) {
+        console.log(err);
         navigate("/");
       }
+
     } else {
       setError(result.error);
     }
@@ -42,11 +60,15 @@ function Login() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white border border-orange-100 rounded-3xl shadow-xl shadow-orange-500/5 p-8">
+
         <div className="text-center mb-8">
           <h2 className="text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent">
             Welcome Back
           </h2>
-          <p className="text-gray-500 mt-2">Log in to manage your daily dabba menu</p>
+
+          <p className="text-gray-500 mt-2">
+            Log in to manage your daily dabba menu
+          </p>
         </div>
 
         {error && (
@@ -56,8 +78,12 @@ function Login() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Email Address
+            </label>
+
             <input
               type="email"
               value={email}
@@ -69,7 +95,10 @@ function Login() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Password
+            </label>
+
             <input
               type="password"
               value={password}
@@ -87,12 +116,19 @@ function Login() {
           >
             {submitting ? "Logging in..." : "Log In"}
           </button>
+
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-8">
           Don't have an account?{" "}
-          <Link to="/register" className="text-orange-600 font-bold hover:underline">Sign up</Link>
+          <Link
+            to="/register"
+            className="text-orange-600 font-bold hover:underline"
+          >
+            Sign up
+          </Link>
         </p>
+
       </div>
     </div>
   );

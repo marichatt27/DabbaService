@@ -30,8 +30,20 @@ function Header() {
                 </Link>
               )}
               {user.role === "provider" && (
-                <Link to="/provider-dashboard" className="hover:text-orange-600 transition-colors font-bold text-orange-600">
+                <Link
+                  to="/provider-dashboard"
+                  className="hover:text-orange-600 transition-colors font-bold text-orange-600"
+                >
                   Kitchen Dashboard 🍳
+                </Link>
+              )}
+
+              {user.role === "admin" && (
+                <Link
+                  to="/admin-dashboard"
+                  className="hover:text-orange-600 transition-colors font-bold text-orange-600"
+                >
+                  Dashboard ⚙️
                 </Link>
               )}
               <Link to="/profile" className="hover:text-orange-600 transition-colors">Profile</Link>

@@ -11,6 +11,7 @@ import AddMeal from "../pages/AddMeal";
 import EditMeal from "../pages/EditMeal";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AdminDashboard from "../pages/AdminDashboard";
+import ManageUsers from "../pages/ManageUsers";
 
 const router = createBrowserRouter([
   {
@@ -27,34 +28,42 @@ const router = createBrowserRouter([
         path: "provider-dashboard",
         element: (
           <ProtectedRoute allowedRoles={["provider", "admin"]}>
-          <ProviderDashboard />
+            <ProviderDashboard />
           </ProtectedRoute>
         ),
       },
       {
-  path: "admin-dashboard",
-  element: (
-    <ProtectedRoute allowedRoles={["admin"]}>
-      <AdminDashboard />
-    </ProtectedRoute>
-  ),
-},
+        path: "admin-dashboard",
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "manage-users",
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <ManageUsers />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "add-meal",
         element: (
           <ProtectedRoute allowedRoles={["provider", "admin"]}>
-          <AddMeal />
+            <AddMeal />
           </ProtectedRoute>
-      ),
+        ),
       },
       {
         path: "edit-meal/:id",
         element: (
           <ProtectedRoute allowedRoles={["provider", "admin"]}>
-          <EditMeal />
+            <EditMeal />
           </ProtectedRoute>
-      ),
-    },
+        ),
+      },
     ],
   },
 ]);

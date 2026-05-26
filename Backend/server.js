@@ -8,6 +8,9 @@ const authRoutes = require("./routes/authRoutes");
 const testRoutes = require("./routes/testRoutes");
 const mealRoutes = require("./routes/mealRoutes");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
+const cookieParser = require("cookie-parser");
+
+app.use(cookieParser());
 
 const app = express();
 

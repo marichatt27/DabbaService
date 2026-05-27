@@ -189,91 +189,114 @@ function ManageUsers() {
             </div>
 
             {/* USERS TABLE */}
-            <div className="bg-white border border-orange-100 rounded-3xl overflow-hidden shadow-md shadow-orange-500/5">
+<div className="bg-white border border-orange-100 rounded-3xl overflow-hidden shadow-md shadow-orange-500/5">
 
-                {/* TABLE HEADER */}
-                <div className="grid grid-cols-10 gap-4 px-6 py-5 bg-orange-50 border-b border-orange-100 text-sm font-extrabold text-gray-700 uppercase tracking-wider">
+  {/* TABLE HEADER */}
+  <div className="grid grid-cols-12 gap-4 px-6 py-5 bg-orange-50 border-b border-orange-100 text-sm font-extrabold text-gray-700 uppercase tracking-wider">
 
-                    <div className="col-span-3">User</div>
+    <div className="col-span-3">User</div>
+    <div className="col-span-3">Email</div>
+    <div className="col-span-2">Phone</div>
+    <div className="col-span-1">Role</div>
+    <div className="col-span-1">Status</div>
+    <div className="col-span-2 text-center">Actions</div>
 
-                    <div className="col-span-3">Email</div>
+  </div>
 
-                    <div className="col-span-2">Phone</div>
+  {loading ? (
 
-                    <div className="col-span-1">Role</div>
+    <div className="flex justify-center items-center py-20">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+    </div>
 
-                    <div className="col-span-1">Status</div>
-                </div>
+  ) : filteredUsers.length === 0 ? (
 
-                {loading ? (
+    <div className="text-center py-20">
+      <div className="text-5xl mb-4">📭</div>
+      <h3 className="text-2xl font-bold text-gray-700">No Users Found</h3>
+      <p className="text-gray-400 mt-2">No matching users available.</p>
+    </div>
 
-                    <div className="flex justify-center items-center py-20">
-                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
-                    </div>
+  ) : (
 
-                ) : filteredUsers.length === 0 ? (
+    filteredUsers.map((user) => (
+      <div
+        key={user._id}
+        className="grid grid-cols-12 gap-4 px-6 py-5 border-b border-orange-50 items-center hover:bg-orange-50/40 transition-all"
+      >
 
-                    <div className="text-center py-20">
-                        <div className="text-5xl mb-4">📭</div>
+        {/* USER */}
+        <div className="col-span-3">
+          <h3 className="font-bold text-gray-800">{user.name}</h3>
+        </div>
 
-                        <h3 className="text-2xl font-bold text-gray-700">
-                            No Users Found
-                        </h3>
+        {/* EMAIL */}
+        <div className="col-span-3 text-gray-500 text-sm">
+          {user.email}
+        </div>
 
-                        <p className="text-gray-400 mt-2">
-                            No matching users available.
-                        </p>
-                    </div>
+        {/* PHONE */}
+        <div className="col-span-2 text-sm">
+          <span className={user.phone ? "text-gray-700" : "text-gray-400 italic"}>
+            {user.phone || "Not Added"}
+          </span>
+        </div>
 
-                ) : (
+        {/* ROLE */}
+        <div className="col-span-1">
+          <span className="capitalize text-sm font-semibold text-gray-700">
+            {user.role}
+          </span>
+        </div>
 
-                    filteredUsers.map((user) => (
-                        <div
-                            key={user._id}
-                            className="grid grid-cols-10 gap-4 px-6 py-5 border-b border-orange-50 items-center hover:bg-orange-50/40 transition-all"
-                        >
+        {/* STATUS */}
+        <div className="col-span-1 border-r border-gray-300 pr-3">
+          <span
+            className={`text-xs font-bold px-3 py-1 rounded-full ${
+              user.isActive
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {user.isActive ? "Active" : "Blocked"}
+          </span>
+        </div>
 
-                            {/* USER */}
-                            <div className="col-span-3">
-                                <h3 className="font-bold text-gray-800">
-                                    {user.name}
-                                </h3>
-                            </div>
+        {/* ACTIONS */}
+        <div className="col-span-2 flex gap-2 justify-center">
 
-                            {/* EMAIL */}
-                            <div className="col-span-3 text-gray-500 text-sm">
-                                {user.email}
-                            </div>
+          {user.role !== "admin" ? (
+            <>
+              <button
+                onClick={() => handleToggleUser(user._id, user.isActive)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  user.isActive
+                    ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700"
+                    : "bg-green-50 hover:bg-green-100 text-green-700"
+                }`}
+              >
+                {user.isActive ? "Block" : "Activate"}
+              </button>
 
-                            {/* PHONE */}
-                            <div className="col-span-2 text-gray-700 text-sm">
-                                <span className={user.phone ? "" : "text-gray-400 italic"}>
-                                    {user.phone || "Not Added"}
-                                </span>
-                            </div>
+              <button
+                onClick={() => handleDeleteUser(user._id)}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-red-50 hover:bg-red-100 text-red-600 transition-all"
+              >
+                Delete
+              </button>
+            </>
+          ) : (
+            <span className="text-xs font-bold text-purple-600 bg-purple-50 px-4 py-2 rounded-xl">
+              Protected Admin
+            </span>
+          )}
 
-                            {/* ROLE */}
-                            <div className="col-span-1">
-                                <span className="capitalize text-sm font-semibold text-gray-700">
-                                    {user.role}
-                                </span>
-                            </div>
+        </div>
 
-                            {/* STATUS */}
-                            <div className="col-span-1">
-                                <span
-                                    className={`text-xs font-bold px-3 py-1 rounded-full ${user.isActive
-                                        ? "bg-green-100 text-green-700"
-                                        : "bg-red-100 text-red-700"
-                                        }`}
-                                >
-                                    {user.isActive ? "Active" : "Blocked"}
-                                </span>
-                            </div>
-                        </div>
-                    ))
-                )}
-            </div>
+      </div>
+    ))
+  )}
+</div>
         </div>
     );
 }

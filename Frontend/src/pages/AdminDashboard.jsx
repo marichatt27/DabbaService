@@ -27,7 +27,7 @@ function AdminDashboard() {
 
         const fetchGrowthStats = async () => {
             try {
-                const res = await api.get("/auth/admin-api/stats");
+                const res = await api.get("/auth/admin/stats");
                 setGrowthStats(res.data);
             } catch (err) {
                 console.log(err);

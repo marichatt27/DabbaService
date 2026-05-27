@@ -95,6 +95,67 @@ function ManageProviders() {
                     Control dabba providers and their meal services.
                 </p>
             </div>
+            {/* TOP STATS CARDS */}
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+    {/* TOTAL */}
+    <div className="bg-white rounded-3xl p-6 shadow-sm border border-orange-100 hover:shadow-md transition relative overflow-hidden">
+
+        <div className="flex justify-between items-start">
+            <div>
+                <p className="text-gray-500 text-sm">Total Providers</p>
+                <h2 className="text-4xl font-extrabold text-gray-900 mt-2">
+                    {providers.length}
+                </h2>
+                <p className="text-gray-400 text-sm mt-1">Registered providers</p>
+            </div>
+
+            <div className="text-3xl bg-blue-50 text-blue-600 px-3 py-2 rounded-2xl">
+                👥
+            </div>
+        </div>
+
+    </div>
+
+    {/* ACTIVE */}
+    <div className="bg-white rounded-3xl p-6 shadow-sm border border-green-100 hover:shadow-md transition relative overflow-hidden">
+
+        <div className="flex justify-between items-start">
+            <div>
+                <p className="text-gray-500 text-sm">Active Providers</p>
+                <h2 className="text-4xl font-extrabold text-green-600 mt-2">
+                    {providers.filter(p => p.isActive).length}
+                </h2>
+                <p className="text-gray-400 text-sm mt-1">Active accounts</p>
+            </div>
+
+            <div className="text-3xl bg-green-50 text-green-600 px-3 py-2 rounded-2xl">
+                ✅
+            </div>
+        </div>
+
+    </div>
+
+    {/* BLOCKED */}
+    <div className="bg-white rounded-3xl p-6 shadow-sm border border-red-100 hover:shadow-md transition relative overflow-hidden">
+
+        <div className="flex justify-between items-start">
+            <div>
+                <p className="text-gray-500 text-sm">Blocked Providers</p>
+                <h2 className="text-4xl font-extrabold text-red-600 mt-2">
+                    {providers.filter(p => !p.isActive).length}
+                </h2>
+                <p className="text-gray-400 text-sm mt-1">Blocked accounts</p>
+            </div>
+
+            <div className="text-3xl bg-red-50 text-red-600 px-3 py-2 rounded-2xl">
+                🚫
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
             {/* SEARCH + FILTER */}
             <div className="bg-white border border-orange-100 rounded-3xl p-5 mb-8 shadow-md shadow-orange-500/5 flex flex-col md:flex-row gap-4 justify-between">
@@ -128,13 +189,14 @@ function ManageProviders() {
                     <div className="col-span-3">Email</div>
                     <div className="col-span-2">Phone</div>
                     <div className="col-span-2">Location</div>
-                    <div className="col-span-2">Status</div>
+                    <div className="col-span-2 text-center">Actions</div>
                 </div>
 
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
                     </div>
+
                 ) : filteredProviders.length === 0 ? (
                     <div className="text-center py-20">
                         <div className="text-5xl mb-4">📭</div>
@@ -145,31 +207,43 @@ function ManageProviders() {
                             No matching providers available.
                         </p>
                     </div>
+
                 ) : (
+
                     filteredProviders.map((provider) => (
                         <div
                             key={provider._id}
                             className="grid grid-cols-12 gap-4 px-6 py-5 border-b border-orange-50 items-center hover:bg-orange-50/40 transition-all"
                         >
 
-                            <div className="col-span-3 font-bold text-gray-800">
-                                {provider.name}
+                            {/* PROVIDER */}
+                            <div className="col-span-3">
+                                <h3 className="font-bold text-gray-800">
+                                    {provider.name}
+                                </h3>
                             </div>
 
+                            {/* EMAIL */}
                             <div className="col-span-3 text-gray-500 text-sm">
                                 {provider.email}
                             </div>
 
-                            <div className="col-span-2 text-gray-700 text-sm">
-                                {provider.phone || "Not Added"}
+                            {/* PHONE */}
+                            <div className="col-span-2 text-sm">
+                                <span className={provider.phone ? "text-gray-700" : "text-gray-400 italic"}>
+                                    {provider.phone || "Not Added"}
+                                </span>
                             </div>
 
-                            <div className="col-span-2 text-gray-600 text-sm">
+                            {/* LOCATION */}
+                            <div className="col-span-2 text-sm text-gray-600">
                                 {provider.location || "Unknown"}
                             </div>
 
-                            <div className="col-span-2 flex gap-2">
+                            {/* ACTIONS */}
+                            <div className="col-span-2 flex gap-2 justify-center border-l border-gray-300 pl-3">
 
+                                {/* STATUS BADGE */}
                                 <span
                                     className={`text-xs font-bold px-3 py-1 rounded-full ${
                                         provider.isActive
@@ -180,7 +254,7 @@ function ManageProviders() {
                                     {provider.isActive ? "Active" : "Blocked"}
                                 </span>
 
-                                {/* SIMPLE ACTIONS */}
+                                {/* TOGGLE */}
                                 <button
                                     onClick={() =>
                                         handleToggleProvider(
@@ -188,20 +262,27 @@ function ManageProviders() {
                                             provider.isActive
                                         )
                                     }
-                                    className="px-3 py-1 text-xs rounded-xl bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-bold"
+                                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                                        provider.isActive
+                                            ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700"
+                                            : "bg-green-50 hover:bg-green-100 text-green-700"
+                                    }`}
                                 >
-                                    Toggle
+                                    {provider.isActive ? "Block" : "Activate"}
                                 </button>
 
+                                {/* DELETE */}
                                 <button
                                     onClick={() =>
                                         handleDeleteProvider(provider._id)
                                     }
-                                    className="px-3 py-1 text-xs rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold"
+                                    className="px-4 py-2 rounded-xl text-xs font-bold bg-red-50 hover:bg-red-100 text-red-600 transition-all"
                                 >
                                     Delete
                                 </button>
+
                             </div>
+
                         </div>
                     ))
                 )}

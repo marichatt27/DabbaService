@@ -1,0 +1,213 @@
+import { useEffect, useState } from "react";
+import api from "../services/api";
+
+function ManageProviders() {
+    const [providers, setProviders] = useState([]);
+    const [filteredProviders, setFilteredProviders] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState("all");
+
+    // FETCH PROVIDERS
+    const fetchProviders = async () => {
+        try {
+            const res = await api.get("/auth/admin/providers");
+
+            setProviders(res.data);
+            setFilteredProviders(res.data);
+
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProviders();
+    }, []);
+
+    // SEARCH + FILTER
+    useEffect(() => {
+        let updated = [...providers];
+
+        if (search.trim()) {
+            updated = updated.filter((p) =>
+                p.name.toLowerCase().includes(search.toLowerCase()) ||
+                p.email.toLowerCase().includes(search.toLowerCase())
+            );
+        }
+
+        if (filter === "active") {
+            updated = updated.filter((p) => p.isActive);
+        }
+
+        if (filter === "blocked") {
+            updated = updated.filter((p) => !p.isActive);
+        }
+
+        setFilteredProviders(updated);
+
+    }, [search, filter, providers]);
+
+    // TOGGLE PROVIDER STATUS
+    const handleToggleProvider = async (id, isActive) => {
+        try {
+            await api.put(`/auth/admin/providers/${id}`, {
+                isActive: !isActive,
+            });
+
+            fetchProviders();
+        } catch (err) {
+            console.log(err);
+            alert("Failed to update provider.");
+        }
+    };
+
+    // DELETE PROVIDER
+    const handleDeleteProvider = async (id) => {
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this provider?"
+        );
+
+        if (!confirmDelete) return;
+
+        try {
+            await api.delete(`/auth/admin/providers/${id}`);
+            fetchProviders();
+        } catch (err) {
+            console.log(err);
+            alert("Failed to delete provider.");
+        }
+    };
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 py-8">
+
+            {/* HEADER */}
+            <div className="mb-10">
+                <h1 className="text-5xl font-extrabold text-gray-800">
+                    Manage Providers
+                </h1>
+
+                <p className="text-gray-500 mt-3 text-lg">
+                    Control dabba providers and their meal services.
+                </p>
+            </div>
+
+            {/* SEARCH + FILTER */}
+            <div className="bg-white border border-orange-100 rounded-3xl p-5 mb-8 shadow-md shadow-orange-500/5 flex flex-col md:flex-row gap-4 justify-between">
+
+                <input
+                    type="text"
+                    placeholder="Search providers..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full md:w-96 px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-200"
+                />
+
+                <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className="px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none"
+                >
+                    <option value="all">All Providers</option>
+                    <option value="active">Active Providers</option>
+                    <option value="blocked">Blocked Providers</option>
+                </select>
+            </div>
+
+            {/* TABLE */}
+            <div className="bg-white border border-orange-100 rounded-3xl overflow-hidden shadow-md shadow-orange-500/5">
+
+                {/* HEADER */}
+                <div className="grid grid-cols-12 gap-4 px-6 py-5 bg-orange-50 border-b border-orange-100 text-sm font-extrabold text-gray-700 uppercase tracking-wider">
+
+                    <div className="col-span-3">Provider</div>
+                    <div className="col-span-3">Email</div>
+                    <div className="col-span-2">Phone</div>
+                    <div className="col-span-2">Location</div>
+                    <div className="col-span-2">Status</div>
+                </div>
+
+                {loading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+                    </div>
+                ) : filteredProviders.length === 0 ? (
+                    <div className="text-center py-20">
+                        <div className="text-5xl mb-4">📭</div>
+                        <h3 className="text-2xl font-bold text-gray-700">
+                            No Providers Found
+                        </h3>
+                        <p className="text-gray-400 mt-2">
+                            No matching providers available.
+                        </p>
+                    </div>
+                ) : (
+                    filteredProviders.map((provider) => (
+                        <div
+                            key={provider._id}
+                            className="grid grid-cols-12 gap-4 px-6 py-5 border-b border-orange-50 items-center hover:bg-orange-50/40 transition-all"
+                        >
+
+                            <div className="col-span-3 font-bold text-gray-800">
+                                {provider.name}
+                            </div>
+
+                            <div className="col-span-3 text-gray-500 text-sm">
+                                {provider.email}
+                            </div>
+
+                            <div className="col-span-2 text-gray-700 text-sm">
+                                {provider.phone || "Not Added"}
+                            </div>
+
+                            <div className="col-span-2 text-gray-600 text-sm">
+                                {provider.location || "Unknown"}
+                            </div>
+
+                            <div className="col-span-2 flex gap-2">
+
+                                <span
+                                    className={`text-xs font-bold px-3 py-1 rounded-full ${
+                                        provider.isActive
+                                            ? "bg-green-100 text-green-700"
+                                            : "bg-red-100 text-red-700"
+                                    }`}
+                                >
+                                    {provider.isActive ? "Active" : "Blocked"}
+                                </span>
+
+                                {/* SIMPLE ACTIONS */}
+                                <button
+                                    onClick={() =>
+                                        handleToggleProvider(
+                                            provider._id,
+                                            provider.isActive
+                                        )
+                                    }
+                                    className="px-3 py-1 text-xs rounded-xl bg-yellow-50 hover:bg-yellow-100 text-yellow-700 font-bold"
+                                >
+                                    Toggle
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        handleDeleteProvider(provider._id)
+                                    }
+                                    className="px-3 py-1 text-xs rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default ManageProviders;

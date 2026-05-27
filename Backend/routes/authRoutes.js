@@ -14,32 +14,23 @@ const User = require("../models/User");
 const router = express.Router();
 
 
+// ==========================
 // AUTH ROUTES
+// ==========================
 router.post("/register", registerUser);
-
 router.post("/login", loginUser);
-
 router.get("/me", authMiddleware, getMe);
-
 router.put("/profile", authMiddleware, updateProfile);
 
 
+// ==========================
 // ADMIN STATS ROUTE
+// ==========================
 router.get("/admin/stats", authMiddleware, async (req, res) => {
-
   try {
-
-    const totalUsers = await User.countDocuments({
-      role: "customer",
-    });
-
-    const totalProviders = await User.countDocuments({
-      role: "provider",
-    });
-
-    const totalAdmins = await User.countDocuments({
-      role: "admin",
-    });
+    const totalUsers = await User.countDocuments({ role: "customer" });
+    const totalProviders = await User.countDocuments({ role: "provider" });
+    const totalAdmins = await User.countDocuments({ role: "admin" });
 
     res.status(200).json({
       totalUsers,
@@ -48,74 +39,95 @@ router.get("/admin/stats", authMiddleware, async (req, res) => {
     });
 
   } catch (error) {
-
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
 
-// GET ALL USERS
+// ==========================
+// GET ALL USERS (CUSTOMERS)
+// ==========================
 router.get("/admin/users", authMiddleware, async (req, res) => {
-
   try {
-
-    const users = await User.find({
-      role: "customer",
-    })
+    const users = await User.find({ role: "customer" })
       .select("-password")
       .sort({ createdAt: -1 });
 
     res.status(200).json(users);
 
   } catch (error) {
-
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
 
-// BLOCK / ACTIVATE USER
-router.put("/admin/users/:id", authMiddleware, async (req, res) => {
-
+// ==========================
+// GET ALL PROVIDERS (NEW)
+// ==========================
+router.get("/admin/providers", authMiddleware, async (req, res) => {
   try {
+    const providers = await User.find({ role: "provider" })
+      .select("-password")
+      .sort({ createdAt: -1 });
 
+    res.status(200).json(providers);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// ==========================
+// BLOCK / ACTIVATE USER
+// ==========================
+router.put("/admin/users/:id", authMiddleware, async (req, res) => {
+  try {
     const { isActive } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      {
-        isActive,
-      },
-      {
-        new: true,
-      }
+      { isActive },
+      { new: true }
     ).select("-password");
 
     res.status(200).json(updatedUser);
 
   } catch (error) {
-
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
 
-// DELETE USER
-router.delete("/admin/users/:id", authMiddleware, async (req, res) => {
-
+// ==========================
+// BLOCK / ACTIVATE PROVIDER (NEW)
+// ==========================
+router.put("/admin/providers/:id", authMiddleware, async (req, res) => {
   try {
+    const { isActive } = req.body;
 
+    const updatedProvider = await User.findByIdAndUpdate(
+      req.params.id,
+      { isActive },
+      { new: true }
+    ).select("-password");
+
+    res.status(200).json(updatedProvider);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// ==========================
+// DELETE USER
+// ==========================
+router.delete("/admin/users/:id", authMiddleware, async (req, res) => {
+  try {
     const user = await User.findById(req.params.id);
 
-    // PREVENT ADMIN DELETE
     if (user.role === "admin") {
-
       return res.status(403).json({
         message: "Admin accounts cannot be deleted",
       });
@@ -128,27 +140,44 @@ router.delete("/admin/users/:id", authMiddleware, async (req, res) => {
     });
 
   } catch (error) {
-
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
-// FIX OLD USERS WITHOUT isActive
-router.get("/admin/fix-users", async (req, res) => {
 
+// ==========================
+// DELETE PROVIDER (NEW)
+// ==========================
+router.delete("/admin/providers/:id", authMiddleware, async (req, res) => {
   try {
+    const provider = await User.findById(req.params.id);
 
+    if (provider.role === "admin") {
+      return res.status(403).json({
+        message: "Admin accounts cannot be deleted",
+      });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      message: "Provider deleted successfully",
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// ==========================
+// FIX OLD USERS
+// ==========================
+router.get("/admin/providers", authMiddleware, async (req, res) => {
+  try {
     await User.updateMany(
-      {
-        isActive: { $exists: false },
-      },
-      {
-        $set: {
-          isActive: true,
-        },
-      }
+      { isActive: { $exists: false } },
+      { $set: { isActive: true } }
     );
 
     res.status(200).json({
@@ -156,10 +185,7 @@ router.get("/admin/fix-users", async (req, res) => {
     });
 
   } catch (error) {
-
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 

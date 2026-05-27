@@ -192,7 +192,7 @@ function ManageUsers() {
             <div className="bg-white border border-orange-100 rounded-3xl overflow-hidden shadow-md shadow-orange-500/5">
 
                 {/* TABLE HEADER */}
-                <div className="grid grid-cols-12 gap-4 px-6 py-5 bg-orange-50 border-b border-orange-100 text-sm font-extrabold text-gray-700 uppercase tracking-wider">
+                <div className="grid grid-cols-10 gap-4 px-6 py-5 bg-orange-50 border-b border-orange-100 text-sm font-extrabold text-gray-700 uppercase tracking-wider">
 
                     <div className="col-span-3">User</div>
 
@@ -203,8 +203,6 @@ function ManageUsers() {
                     <div className="col-span-1">Role</div>
 
                     <div className="col-span-1">Status</div>
-
-                    <div className="col-span-2 text-center">Actions</div>
                 </div>
 
                 {loading ? (
@@ -232,7 +230,7 @@ function ManageUsers() {
                     filteredUsers.map((user) => (
                         <div
                             key={user._id}
-                            className="grid grid-cols-12 gap-4 px-6 py-5 border-b border-orange-50 items-center hover:bg-orange-50/40 transition-all"
+                            className="grid grid-cols-10 gap-4 px-6 py-5 border-b border-orange-50 items-center hover:bg-orange-50/40 transition-all"
                         >
 
                             {/* USER */}
@@ -271,38 +269,6 @@ function ManageUsers() {
                                 >
                                     {user.isActive ? "Active" : "Blocked"}
                                 </span>
-                            </div>
-
-                            /* ACTIONS */
-                            <div className="col-span-2 flex gap-2 justify-center">
-
-                                {user.role !== "admin" ? (
-                                    <>
-                                        <button
-                                            onClick={() =>
-                                                handleToggleUser(user._id, user.isActive)
-                                            }
-                                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${user.isActive
-                                                    ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700"
-                                                    : "bg-green-50 hover:bg-green-100 text-green-700"
-                                                }`}
-                                        >
-                                            {user.isActive ? "Block" : "Activate"}
-                                        </button>
-
-                                        <button
-                                            onClick={() => handleDeleteUser(user._id)}
-                                            className="px-4 py-2 rounded-xl text-xs font-bold bg-red-50 hover:bg-red-100 text-red-600 transition-all"
-                                        >
-                                            Delete
-                                        </button>
-                                    </>
-                                ) : (
-                                    <span className="text-xs font-bold text-purple-600 bg-purple-50 px-4 py-2 rounded-xl">
-                                        Protected Admin
-                                    </span>
-                                )}
-
                             </div>
                         </div>
                     ))

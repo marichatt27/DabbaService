@@ -9,25 +9,33 @@ function AdminDashboard() {
         totalProviders: 0,
         totalAdmins: 0,
     });
-
+    const [growthStats, setGrowthStats] = useState({
+        todayOrders: 0,
+        todayRevenue: 0,
+        growth: 0,
+    });
     useEffect(() => {
 
         const fetchStats = async () => {
-
             try {
-
                 const res = await api.get("/auth/admin/stats");
-
                 setStats(res.data);
-                console.log(res.data);
-
             } catch (err) {
+                console.log(err);
+            }
+        };
 
+        const fetchGrowthStats = async () => {
+            try {
+                const res = await api.get("/auth/admin-api/stats");
+                setGrowthStats(res.data);
+            } catch (err) {
                 console.log(err);
             }
         };
 
         fetchStats();
+        fetchGrowthStats();
 
     }, []);
 
@@ -214,55 +222,6 @@ function AdminDashboard() {
 
                 </div>
             </div>
-            {/* PLATFORM STATUS */}
-            <div className="mt-12 bg-white border border-orange-100 rounded-3xl p-8 shadow-md shadow-orange-500/5">
-
-                <div className="flex items-center gap-3 mb-6">
-                    <span className="text-4xl">📊</span>
-
-                    <h2 className="text-3xl font-extrabold text-gray-800">
-                        Platform Status
-                    </h2>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                    {/* DAILY USERS */}
-                    <div className="bg-orange-50 rounded-2xl p-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-2">
-                            Total Customers
-                        </h3>
-
-                        <p className="text-4xl font-black text-orange-600">
-                            {stats.totalUsers}
-                        </p>
-                    </div>
-
-                    {/* PROVIDERS */}
-                    <div className="bg-green-50 rounded-2xl p-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-2">
-                            Active Kitchens
-                        </h3>
-
-                        <p className="text-4xl font-black text-green-600">
-                            {stats.totalProviders}
-                        </p>
-                    </div>
-
-                    {/* ADMINS */}
-                    <div className="bg-blue-50 rounded-2xl p-6">
-                        <h3 className="text-lg font-bold text-gray-800 mb-2">
-                            Platform Admins
-                        </h3>
-
-                        <p className="text-4xl font-black text-blue-600">
-                            {stats.totalAdmins}
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-
         </div>
     );
 }

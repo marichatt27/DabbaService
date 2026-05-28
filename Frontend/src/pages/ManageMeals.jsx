@@ -206,7 +206,7 @@ function ManageMeals() {
                             </h2>
 
                             <p className="text-white text-sm mt-1">
-                                Blocked / unavailable
+                                Currently unavailable
                             </p>
 
                         </div>

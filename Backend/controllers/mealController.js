@@ -33,6 +33,8 @@ const updateMeal = async (req, res) => {
 
     try {
 
+        console.log(req.body);
+
         const updatedMeal = await Meal.findByIdAndUpdate(
             req.params.id,
             req.body,
@@ -47,6 +49,8 @@ const updateMeal = async (req, res) => {
         });
 
     } catch (error) {
+
+        console.log(error);
 
         res.status(500).json({
             message: error.message,

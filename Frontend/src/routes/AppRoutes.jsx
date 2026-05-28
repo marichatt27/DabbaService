@@ -13,7 +13,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import AdminDashboard from "../pages/AdminDashboard";
 import ManageUsers from "../pages/ManageUsers";
 import ManageProviders from "../pages/ManageProviders";
-
+import ManageMeals from "../pages/ManageMeals";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -54,6 +54,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["admin"]}>
             <ManageProviders />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "manage-meals",
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <ManageMeals />
           </ProtectedRoute>
         ),
       },

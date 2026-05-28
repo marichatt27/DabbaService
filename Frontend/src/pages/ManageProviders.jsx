@@ -137,15 +137,15 @@ function ManageProviders() {
     </div>
 
     {/* BLOCKED */}
-    <div className="bg-white rounded-3xl p-6 shadow-sm border border-red-100 hover:shadow-md transition relative overflow-hidden">
+                <div className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-3xl p-6 shadow-xl shadow-orange-500/10 text-white">
 
         <div className="flex justify-between items-start">
             <div>
-                <p className="text-gray-500 text-sm">Blocked Providers</p>
-                <h2 className="text-4xl font-extrabold text-red-600 mt-2">
+                <p className="text-white text-sm">Blocked Providers</p>
+                <h2 className="text-4xl font-extrabold text-white mt-2">
                     {providers.filter(p => !p.isActive).length}
                 </h2>
-                <p className="text-gray-400 text-sm mt-1">Blocked accounts</p>
+                <p className="text-white text-sm mt-1">Blocked accounts</p>
             </div>
 
             <div className="text-3xl bg-red-50 text-red-600 px-3 py-2 rounded-2xl">

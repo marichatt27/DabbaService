@@ -56,9 +56,27 @@ const deleteMeal = async (req, res) => {
   }
 };
 
+const getAllMealsAdmin = async (req, res) => {
+
+    try {
+
+        const meals = await Meal.find()
+            .populate("provider", "businessName");
+
+        res.json(meals);
+
+    } catch (err) {
+
+        res.status(500).json({
+            message: err.message,
+        });
+    }
+};
+
 module.exports = {
   createMeal,
   getMeals,
   updateMeal,
   deleteMeal,
+  getAllMealsAdmin,
 };

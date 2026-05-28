@@ -30,19 +30,28 @@ const getMeals = async (req, res) => {
 };
 
 const updateMeal = async (req, res) => {
-  try {
-    const updatedMeal = await Meal.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.status(200).json({
-      message: "Meal updated",
-      updatedMeal,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+
+    try {
+
+        const updatedMeal = await Meal.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+            }
+        );
+
+        res.status(200).json({
+            message: "Meal updated successfully",
+            updatedMeal,
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message,
+        });
+    }
 };
 
 const deleteMeal = async (req, res) => {

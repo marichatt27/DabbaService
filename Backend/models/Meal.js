@@ -26,6 +26,11 @@ const mealSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    status: {
+      type: String,
+      enum: ["Active", "Blocked"],
+      default: "Active",
+    },
   },
   {
     timestamps: true,

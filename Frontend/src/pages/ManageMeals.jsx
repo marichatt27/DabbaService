@@ -5,17 +5,12 @@ function ManageMeals() {
 
     const [meals, setMeals] = useState([]);
     const [filteredMeals, setFilteredMeals] = useState([]);
-
     const [loading, setLoading] = useState(true);
 
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("all");
 
     // FETCH MEALS
-    useEffect(() => {
-        fetchMeals();
-    }, []);
-
     const fetchMeals = async () => {
 
         try {
@@ -35,13 +30,17 @@ function ManageMeals() {
         }
     };
 
+    useEffect(() => {
+        fetchMeals();
+    }, []);
+
     // SEARCH + FILTER
     useEffect(() => {
 
-        let updatedMeals = meals;
+        let updatedMeals = [...meals];
 
         // SEARCH
-        if (search) {
+        if (search.trim()) {
 
             updatedMeals = updatedMeals.filter((meal) =>
                 meal.title.toLowerCase().includes(search.toLowerCase())
@@ -78,18 +77,32 @@ function ManageMeals() {
         } catch (err) {
 
             console.log(err);
+            alert("Failed to delete meal.");
         }
     };
 
-    // LOADING
-    if (loading) {
+    // TOGGLE STATUS
+    const toggleMealStatus = async (id, currentStatus) => {
 
-        return (
-            <div className="p-6 text-lg font-semibold">
-                Loading meals...
-            </div>
-        );
-    }
+        try {
+
+            const newStatus =
+                currentStatus === "Active"
+                    ? "Blocked"
+                    : "Active";
+
+            await api.put(`/meals/${id}`, {
+                status: newStatus,
+            });
+
+            fetchMeals();
+
+        } catch (err) {
+
+            console.log(err);
+            alert("Failed to update meal status.");
+        }
+    };
 
     return (
 
@@ -117,6 +130,7 @@ function ManageMeals() {
                     <div className="flex justify-between items-start">
 
                         <div>
+
                             <p className="text-gray-500 text-sm">
                                 Total Meals
                             </p>
@@ -128,6 +142,7 @@ function ManageMeals() {
                             <p className="text-gray-400 text-sm mt-1">
                                 Meals available
                             </p>
+
                         </div>
 
                         <div className="text-3xl bg-orange-50 text-orange-600 px-3 py-2 rounded-2xl">
@@ -144,17 +159,23 @@ function ManageMeals() {
                     <div className="flex justify-between items-start">
 
                         <div>
+
                             <p className="text-gray-500 text-sm">
                                 Active Meals
                             </p>
 
                             <h2 className="text-4xl font-extrabold text-green-600 mt-2">
-                                {meals.length}
+                                {
+                                    meals.filter(
+                                        (meal) => (meal.status || "Active") === "Active"
+                                    ).length
+                                }
                             </h2>
 
                             <p className="text-gray-400 text-sm mt-1">
                                 Currently active
                             </p>
+
                         </div>
 
                         <div className="text-3xl bg-green-50 text-green-600 px-3 py-2 rounded-2xl">
@@ -165,23 +186,29 @@ function ManageMeals() {
 
                 </div>
 
-                {/* HIDDEN */}
+                {/* BLOCKED */}
                 <div className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-3xl p-6 shadow-xl shadow-orange-500/10 text-white">
 
                     <div className="flex justify-between items-start">
 
                         <div>
+
                             <p className="text-white text-sm">
-                                Hidden Meals
+                                Blocked Meals
                             </p>
 
                             <h2 className="text-4xl font-extrabold text-white mt-2">
-                                0
+                                {
+                                    meals.filter(
+                                        (meal) => (meal.status || "Active") === "Blocked"
+                                    ).length
+                                }
                             </h2>
 
                             <p className="text-white text-sm mt-1">
-                                Hidden / unavailable
+                                Blocked / unavailable
                             </p>
+
                         </div>
 
                         <div className="text-3xl bg-red-50 text-red-600 px-3 py-2 rounded-2xl">
@@ -332,15 +359,28 @@ function ManageMeals() {
                             {/* ACTIONS */}
                             <div className="col-span-2 flex gap-2 justify-center border-l border-gray-300 pl-3">
 
-                                {/* STATUS */}
-                                <span className="text-xs font-bold px-3 py-1 rounded-full bg-green-100 text-green-700">
-                                    Active
-                                </span>
+                                {/* STATUS TOGGLE */}
+                                <button
+                                    onClick={() =>
+                                        toggleMealStatus(
+                                            meal._id,
+                                            meal.status || "Active"
+                                        )
+                                    }
+                                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all
+
+    ${(meal.status || "Active") === "Active"
+                                            ? "bg-green-100 hover:bg-green-200 text-green-700"
+                                            : "bg-red-100 hover:bg-red-200 text-red-700"
+                                        }`}
+                                >
+                                    {meal.status || "Active"}
+                                </button>
 
                                 {/* DELETE */}
                                 <button
                                     onClick={() =>
-                                        handleDeleteMeal(meal._id)
+                                        handleDelete(meal._id)
                                     }
                                     className="px-4 py-2 rounded-xl text-xs font-bold bg-red-50 hover:bg-red-100 text-red-600 transition-all"
                                 >

@@ -16,8 +16,8 @@ function ManageSubscriptions() {
         try {
 
             // REPLACE WITH YOUR API
-            const res = await api.get("/subscriptions/admin/all");
-
+            const res = await api.get("/subscriptions");
+            console.log(res.data);
             setSubscriptions(res.data);
             setFilteredSubscriptions(res.data);
 
@@ -90,7 +90,7 @@ function ManageSubscriptions() {
 
             const newStatus =
                 currentStatus === "Active"
-                    ? "Blocked"
+                    ? "Paused"
                     : "Active";
 
             await api.put(`/subscriptions/${id}`, {
@@ -243,7 +243,9 @@ function ManageSubscriptions() {
                 >
                     <option value="all">All Status</option>
                     <option value="Active">Active</option>
-                    <option value="Blocked">Blocked</option>
+                    <option value="Paused">Paused</option>
+<option value="Cancelled">Cancelled</option>
+<option value="Delivered">Delivered</option>
                 </select>
 
             </div>
@@ -332,15 +334,14 @@ function ManageSubscriptions() {
                             {/* PROVIDER */}
                             <div className="col-span-2 text-sm text-gray-600">
 
-                                {sub.provider?.name || "Unknown"}
-
+                                {sub.meal?.provider?.name || "Unknown"}
                             </div>
 
                             {/* PLAN */}
                             <div className="col-span-2">
 
                                 <p className="font-semibold text-gray-700">
-                                    {sub.plan}
+                                    {sub.meal?.title}
                                 </p>
 
                                 <p className="text-sm text-gray-400">
@@ -352,7 +353,7 @@ function ManageSubscriptions() {
                             {/* AMOUNT */}
                             <div className="col-span-2 font-bold text-orange-600">
 
-                                ₹{sub.amount}
+                                ₹{sub.meal?.price || 0}
 
                             </div>
 
